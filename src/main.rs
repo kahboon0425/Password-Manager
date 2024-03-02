@@ -3,7 +3,18 @@
 use eframe::egui;
 use login_page::LoginPage;
 
+mod add_password_form;
 mod login_page;
+mod password_view;
+mod top_panel;
+
+pub trait Window {
+    fn show_window(&mut self, ctx: &egui::Context, open: &mut bool);
+}
+
+pub trait View {
+    fn ui(&mut self, ui: &mut egui::Ui);
+}
 
 fn main() -> Result<(), eframe::Error> {
     // env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
