@@ -9,9 +9,11 @@ pub struct AddPasswordForm {
 
 impl AddPasswordForm {
     pub fn show_window(&mut self, ctx: &egui::Context, open: &mut bool) {
-        egui::Window::new("Test")
+        egui::Window::new("Add Password")
+            .max_size(egui::Vec2::new(200.0, 100.0))
             .vscroll(false)
             .resizable(false)
+            .collapsible(false)
             .open(open)
             .show(ctx, |ui| self.ui(ui));
     }
