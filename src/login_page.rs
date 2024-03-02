@@ -1,4 +1,4 @@
-struct LoginPage {
+pub struct LoginPage {
     secret_key: String,
     show_secret: bool,
 }
@@ -13,7 +13,8 @@ impl Default for LoginPage {
 }
 
 impl LoginPage {
-    pub fn show(&mut self, ctx: &egui::Context) {
+    pub fn show(&mut self, ctx: &egui::Context) -> bool {
+        let mut logged_in = false;
         egui::CentralPanel::default().show(ctx, |ui| {
             let rect = egui::Rect::from_min_max(
                 egui::Pos2::new(0.0, 0.0),
@@ -40,10 +41,13 @@ impl LoginPage {
                     }
                 });
                 ui.add_space(10.0);
-                if ui.button("Login").clicked() {}
+                if ui.button("Login").clicked() {
+                    logged_in = true;
+                }
             });
 
             // println!("Secret Key: {}", self.secret_key);
         });
+        return logged_in;
     }
 }
