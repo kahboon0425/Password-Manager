@@ -2,6 +2,7 @@
 
 use eframe::egui;
 use login_page::LoginPage;
+use top_panel::TopPanel;
 
 mod add_password_form;
 mod login_page;
@@ -31,7 +32,8 @@ fn main() -> Result<(), eframe::Error> {
 
             Box::new(MyApp {
                 login_status: false,
-                login_page: login_page::LoginPage::default(),
+                login_page: LoginPage::default(),
+                top_panel: TopPanel::default(),
             })
         }),
     )
@@ -39,7 +41,8 @@ fn main() -> Result<(), eframe::Error> {
 
 struct MyApp {
     login_status: bool,
-    login_page: login_page::LoginPage,
+    login_page: LoginPage,
+    top_panel: TopPanel,
 }
 
 impl eframe::App for MyApp {
@@ -47,7 +50,7 @@ impl eframe::App for MyApp {
         if self.login_status == false {
             self.login_status = self.login_page.show(ctx);
         } else {
-            // self.login_page
+            self.top_panel.show(ctx);
         }
     }
 }
