@@ -2,6 +2,18 @@
 
 use eframe::egui;
 
+mod add_password_form;
+mod password_view;
+mod top_panel;
+
+pub trait Window {
+    fn show_window(&mut self, ctx: &egui::Context, open: &mut bool);
+}
+
+pub trait View {
+    fn ui(&mut self, ui: &mut egui::Ui);
+}
+
 fn main() -> Result<(), eframe::Error> {
     // env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     let options = eframe::NativeOptions {
