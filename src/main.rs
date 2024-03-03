@@ -39,7 +39,7 @@ impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         match &mut self.magic_crypt {
             Some(mc) => {
-                self.top_panel.show(ctx);
+                self.top_panel.show(ctx, mc);
             }
             None => {
                 if let Some(secret_key) = self.login_page.show(ctx) {

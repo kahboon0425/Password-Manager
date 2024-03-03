@@ -1,5 +1,5 @@
+use magic_crypt::{MagicCrypt256, MagicCryptTrait};
 use serde::{Deserialize, Serialize};
-use serde_json;
 
 #[derive(Serialize, Deserialize)]
 pub struct PasswordDataVec {
@@ -20,17 +20,17 @@ pub struct AddPasswordForm {
 }
 
 impl AddPasswordForm {
-    pub fn show_window(&mut self, ctx: &egui::Context, open: &mut bool) {
+    pub fn show_window(&mut self, ctx: &egui::Context, open: &mut bool, mc: &MagicCrypt256) {
         egui::Window::new("Add Password")
             .max_size(egui::Vec2::new(200.0, 100.0))
             .vscroll(false)
             .resizable(false)
             .collapsible(false)
             .open(open)
-            .show(ctx, |ui| self.ui(ui));
+            .show(ctx, |ui| self.ui(ui, mc));
     }
 
-    fn ui(&mut self, ui: &mut egui::Ui) {
+    fn ui(&mut self, ui: &mut egui::Ui, mc: &MagicCrypt256) {
         ui.horizontal(|ui| {
             ui.label("Name:");
             ui.text_edit_singleline(&mut self.name);
@@ -48,6 +48,12 @@ impl AddPasswordForm {
             }
         });
 
+        let encrypted_password = mc.encrypt_str_to_base64(&mut self.password);
+        println!("{}", encrypted_password);
+        println!(
+            "{}",
+            mc.decrypt_base64_to_string(&encrypted_password).unwrap()
+        );
         if ui.button("Add").clicked() {}
     }
 }
