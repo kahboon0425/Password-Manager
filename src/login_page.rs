@@ -13,8 +13,8 @@ impl Default for LoginPage {
 }
 
 impl LoginPage {
-    pub fn show(&mut self, ctx: &egui::Context) -> bool {
-        let mut logged_in = false;
+    pub fn show(&mut self, ctx: &egui::Context) -> Option<String> {
+        let mut logged_in = None;
         egui::CentralPanel::default().show(ctx, |ui| {
             let rect = egui::Rect::from_min_max(
                 egui::Pos2::new(0.0, 0.0),
@@ -42,7 +42,9 @@ impl LoginPage {
                 });
                 ui.add_space(10.0);
                 if ui.button("Login").clicked() {
-                    logged_in = true;
+                    if self.secret_key.is_empty() == false {
+                        logged_in = Some(self.secret_key.to_string());
+                    }
                 }
             });
 
