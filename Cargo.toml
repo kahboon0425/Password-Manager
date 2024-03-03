@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 egui = "0.26"
 eframe = "0.26"
+magic-crypt = "3.1"

@@ -11,7 +11,6 @@ impl TopPanel {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui.button("Add").clicked() {
-                    println!("Add button clicked!");
                     self.add_password_form_open = true;
                 };
             });
