@@ -10,14 +10,6 @@ mod login_page;
 mod password_view;
 mod top_panel;
 
-pub trait Window {
-    fn show_window(&mut self, ctx: &egui::Context, open: &mut bool);
-}
-
-pub trait View {
-    fn ui(&mut self, ui: &mut egui::Ui);
-}
-
 fn main() -> Result<(), eframe::Error> {
     // env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     let options = eframe::NativeOptions {
@@ -45,8 +37,8 @@ struct MyApp {
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        match self.magic_crypt {
-            Some(_) => {
+        match &mut self.magic_crypt {
+            Some(mc) => {
                 self.top_panel.show(ctx);
             }
             None => {

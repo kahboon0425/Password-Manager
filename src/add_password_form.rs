@@ -1,5 +1,3 @@
-use crate::View;
-
 #[derive(Default)]
 pub struct AddPasswordForm {
     pub name: String,
@@ -17,9 +15,7 @@ impl AddPasswordForm {
             .open(open)
             .show(ctx, |ui| self.ui(ui));
     }
-}
 
-impl crate::View for AddPasswordForm {
     fn ui(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.label("Name:");
