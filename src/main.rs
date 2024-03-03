@@ -2,7 +2,7 @@
 
 use eframe::egui;
 use login_page::LoginPage;
-use magic_crypt::{new_magic_crypt, MagicCrypt256, MagicCryptTrait};
+use magic_crypt::{new_magic_crypt, MagicCrypt256};
 use top_panel::TopPanel;
 
 mod add_password_form;
@@ -43,7 +43,7 @@ impl eframe::App for MyApp {
             }
             None => {
                 if let Some(secret_key) = self.login_page.show(ctx) {
-                    self.magic_crypt = Some(new_magic_crypt!(secret_key, 256));
+                    self.magic_crypt = Some(new_magic_crypt!(&secret_key, 256));
                 }
             }
         }

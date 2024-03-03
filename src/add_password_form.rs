@@ -1,3 +1,17 @@
+use serde::{Deserialize, Serialize};
+use serde_json;
+
+#[derive(Serialize, Deserialize)]
+pub struct PasswordDataVec {
+    pub passwords: Vec<PasswordData>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct PasswordData {
+    pub name: String,
+    pub password: String,
+}
+
 #[derive(Default)]
 pub struct AddPasswordForm {
     pub name: String,
