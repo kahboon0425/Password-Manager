@@ -1,14 +1,16 @@
+use std::{fs::OpenOptions, io::Write};
+
 use magic_crypt::{MagicCrypt256, MagicCryptTrait};
 use serde::{Deserialize, Serialize};
 
 /// A vector of password data entries.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PasswordDataVec {
     pub passwords: Vec<PasswordData>,
 }
 
 /// A single entry of password data.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PasswordData {
     pub name: String,
     pub password: String,
@@ -60,6 +62,31 @@ impl AddPasswordForm {
         );
 
         // Save encrypted password to disk.
-        if ui.button("Add").clicked() {}
+        if ui.button("Add").clicked() {
+            let password_data = PasswordData {
+                name: self.name.clone(),
+                password: encrypted_password.clone(),
+            };
+
+            let mut password_data_vec = PasswordDataVec {
+                passwords: Vec::new(),
+            };
+
+            password_data_vec.passwords.push(password_data);
+
+            println!("Password Data List: {:?}", password_data_vec.passwords);
+
+            let json_data = serde_json::to_string(&password_data_vec.passwords).unwrap();
+
+            let mut save_password = OpenOptions::new()
+                .append(true)
+                .create(true) // create new file or open it if already exists
+                .open("password.txt")
+                .unwrap();
+
+            save_password.write_all(json_data.as_bytes()).unwrap();
+            self.name.clear();
+            self.password.clear();
+        }
     }
 }
