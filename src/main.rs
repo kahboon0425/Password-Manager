@@ -17,32 +17,46 @@ fn main() -> Result<(), eframe::Error> {
         ..Default::default()
     };
     eframe::run_native(
-        "My egui App",
+        "Password Manager",
         options,
-        Box::new(|cc| {
+        Box::new(|_cc| {
             // This gives us image support:
             // egui_extras::install_image_loaders(&cc.egui_ctx);
 
-            Box::new(MyApp::default())
+            Box::new(MainApp::default())
         }),
     )
 }
 
+/// The main app that drives the update loop of the password manager.
 #[derive(Default)]
-struct MyApp {
+struct MainApp {
+    /// An Option enum that holds a MagicCrypt256 struct.
+    /// It will be None when the application is not logged in, and Some when the application is logged in.
     magic_crypt: Option<MagicCrypt256>,
+    /// The login page UI of the application.
     login_page: LoginPage,
+    /// The top panel UI when the user logged into the application.
     top_panel: TopPanel,
 }
 
-impl eframe::App for MyApp {
+impl eframe::App for MainApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Match to see if the magic_crypt Option enum is Some or None
         match &mut self.magic_crypt {
+            // The applicatio is logged in
             Some(mc) => {
-                self.top_panel.show(ctx, mc);
+                // Show top panel
+                if self.top_panel.show(ctx, mc) {
+                    // Set magic_crypt to None when user logs out
+                    self.magic_crypt = None;
+                }
             }
+            // The application is not logged in
             None => {
+                // Show login page
                 if let Some(secret_key) = self.login_page.show(ctx) {
+                    // Create magic_crypt when a secret key is being created from the login page
                     self.magic_crypt = Some(new_magic_crypt!(&secret_key, 256));
                 }
             }

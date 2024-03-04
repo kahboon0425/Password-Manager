@@ -1,11 +1,13 @@
 use magic_crypt::{MagicCrypt256, MagicCryptTrait};
 use serde::{Deserialize, Serialize};
 
+/// A vector of password data entries.
 #[derive(Serialize, Deserialize)]
 pub struct PasswordDataVec {
     pub passwords: Vec<PasswordData>,
 }
 
+/// A single entry of password data.
 #[derive(Serialize, Deserialize)]
 pub struct PasswordData {
     pub name: String,
@@ -14,9 +16,9 @@ pub struct PasswordData {
 
 #[derive(Default)]
 pub struct AddPasswordForm {
-    pub name: String,
-    pub password: String,
-    pub show_password: bool,
+    name: String,
+    password: String,
+    show_password: bool,
 }
 
 impl AddPasswordForm {
@@ -31,11 +33,13 @@ impl AddPasswordForm {
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, mc: &MagicCrypt256) {
+        // Name field
         ui.horizontal(|ui| {
             ui.label("Name:");
             ui.text_edit_singleline(&mut self.name);
         });
 
+        // Password field
         ui.horizontal(|ui| {
             ui.label("Password:");
             ui.add_sized(
@@ -54,6 +58,8 @@ impl AddPasswordForm {
             "{}",
             mc.decrypt_base64_to_string(&encrypted_password).unwrap()
         );
+
+        // Save encrypted password to disk.
         if ui.button("Add").clicked() {}
     }
 }
