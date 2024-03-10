@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
+use add_password_form::AddPasswordForm;
 use eframe::egui;
 use login_page::LoginPage;
 use magic_crypt::{new_magic_crypt, MagicCrypt256};
@@ -38,7 +39,11 @@ struct MainApp {
     login_page: LoginPage,
     /// The top panel UI when the user logged into the application.
     top_panel: TopPanel,
+    check_magic_crypt: bool,
 }
+
+/// TODO: compare user magic crypt with password in file
+/// TODO: only user with match magic crypt can see their password
 
 impl eframe::App for MainApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
@@ -46,8 +51,11 @@ impl eframe::App for MainApp {
         match &mut self.magic_crypt {
             // The applicatio is logged in
             Some(mc) => {
+                // let check_mc: Option<String> = AddPasswordForm::check_magic_crypt(mc);
+
+                let check_mc: Option<String> = AddPasswordForm::check_magic_crypt(mc);
                 // Show top panel
-                if self.top_panel.show(ctx, mc) {
+                if self.top_panel.show(ctx, mc, check_mc) {
                     // Set magic_crypt to None when user logs out
                     self.magic_crypt = None;
                 }

@@ -10,7 +10,12 @@ pub struct TopPanel {
 }
 
 impl TopPanel {
-    pub fn show(&mut self, ctx: &egui::Context, mc: &MagicCrypt256) -> bool {
+    pub fn show(
+        &mut self,
+        ctx: &egui::Context,
+        mc: &MagicCrypt256,
+        check_mc: Option<String>,
+    ) -> bool {
         let mut logout = false;
 
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
@@ -29,7 +34,7 @@ impl TopPanel {
         });
 
         self.add_password_form
-            .show_window(ctx, &mut self.add_password_form_open, mc);
+            .show_window(ctx, &mut self.add_password_form_open, mc, check_mc);
 
         logout
     }
