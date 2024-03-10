@@ -1,4 +1,4 @@
-use crate::add_password_form::AddPasswordForm;
+use crate::{add_password_form::AddPasswordForm, PasswordDataVec};
 use magic_crypt::MagicCrypt256;
 
 #[derive(Default)]
@@ -15,6 +15,7 @@ impl TopPanel {
         ctx: &egui::Context,
         mc: &MagicCrypt256,
         check_mc: Option<String>,
+        existing_password_data: &mut Option<PasswordDataVec>,
     ) -> bool {
         let mut logout = false;
 
@@ -33,8 +34,13 @@ impl TopPanel {
             });
         });
 
-        self.add_password_form
-            .show_window(ctx, &mut self.add_password_form_open, mc, check_mc);
+        self.add_password_form.show_window(
+            ctx,
+            &mut self.add_password_form_open,
+            mc,
+            check_mc,
+            existing_password_data,
+        );
 
         logout
     }
