@@ -1,6 +1,6 @@
 use magic_crypt::{MagicCrypt256, MagicCryptTrait};
 
-use crate::add_password_form::PasswordData;
+use crate::PasswordData;
 
 #[derive(Default)]
 pub struct PasswordView {
