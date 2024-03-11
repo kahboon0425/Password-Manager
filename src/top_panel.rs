@@ -1,8 +1,10 @@
-use crate::{add_password_form::AddPasswordForm, PasswordDataVec};
+use crate::{add_password_form::AddPasswordForm, password_view::PasswordView, PasswordDataVec};
 use magic_crypt::MagicCrypt256;
 
 #[derive(Default)]
 pub struct TopPanel {
+    /// Password list view
+    password_view: PasswordView,
     /// Form for adding password.
     add_password_form: AddPasswordForm,
     /// Boolean to show or hide AddPasswordForm.
@@ -41,6 +43,11 @@ impl TopPanel {
             check_mc,
             existing_password_data,
         );
+
+        if let Some(existing_password_data) = existing_password_data {
+            self.password_view
+                .show(ctx, mc, &existing_password_data.passwords);
+        }
 
         logout
     }
