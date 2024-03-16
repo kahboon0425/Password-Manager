@@ -40,13 +40,13 @@ impl TopPanel {
             ctx,
             &mut self.add_password_form_open,
             mc,
-            check_mc,
+            &check_mc,
             existing_password_data,
         );
 
         if let Some(existing_password_data) = existing_password_data {
             self.password_view
-                .show(ctx, mc, &existing_password_data.passwords);
+                .show(ctx, mc, &mut existing_password_data.passwords, &check_mc);
         }
 
         logout

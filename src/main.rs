@@ -1,6 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use add_password_form::AddPasswordForm;
 use eframe::egui;
 use login_page::LoginPage;
 use magic_crypt::{new_magic_crypt, MagicCrypt256};
@@ -65,16 +64,10 @@ impl eframe::App for MainApp {
         match &mut self.magic_crypt {
             // The applicatio is logged in
             Some(mc) => {
-                // let check_mc: Option<String> = AddPasswordForm::check_magic_crypt(mc);
+                // return the file found
+                let check_mc: Option<String> = self.login_page.check_magic_crypt(mc);
+                self.password_data = self.login_page.read_password(&check_mc);
 
-                let check_mc: Option<String> = LoginPage::check_magic_crypt(mc);
-                // let read_password: Option<PasswordDataVec> = LoginPage::read_password(&check_mc);
-
-                self.password_data = LoginPage::read_password(&check_mc);
-
-                // if let Some(check_mc) = &check_mc {
-                //     self.password_data = LoginPage::read_password(&check_mc);
-                // }
                 println!("{:?}", self.password_data);
 
                 // Show top panel

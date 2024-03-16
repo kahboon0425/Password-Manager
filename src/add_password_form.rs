@@ -1,20 +1,15 @@
-use std::{
-    fs::{File, OpenOptions},
-    io::Write,
-};
+use std::{fs::OpenOptions, io::Write};
 
-use eframe::Error;
-use egui::TextBuffer;
 use magic_crypt::{MagicCrypt256, MagicCryptTrait};
 
-use crate::{PasswordData, PasswordDataVec};
-// use serde::{Deserialize, Serialize};
+use crate::{password_view::PasswordView, PasswordData, PasswordDataVec};
 
 #[derive(Default)]
 pub struct AddPasswordForm {
     name: String,
     password: String,
     show_password: bool,
+    password_view: PasswordView,
 }
 
 impl AddPasswordForm {
@@ -23,7 +18,7 @@ impl AddPasswordForm {
         ctx: &egui::Context,
         open: &mut bool,
         mc: &MagicCrypt256,
-        check_mc: Option<String>,
+        check_mc: &Option<String>,
         existing_password_data: &mut Option<PasswordDataVec>,
     ) {
         egui::Window::new("Add Password")
@@ -32,14 +27,17 @@ impl AddPasswordForm {
             .resizable(false)
             .collapsible(false)
             .open(open)
-            .show(ctx, |ui| self.ui(ui, mc, check_mc, existing_password_data));
+            .show(ctx, |ui| {
+                self.ui(ctx, ui, mc, check_mc, existing_password_data)
+            });
     }
 
     fn ui(
         &mut self,
+        ctx: &egui::Context,
         ui: &mut egui::Ui,
         mc: &MagicCrypt256,
-        check_magic_crypt: Option<String>,
+        check_magic_crypt: &Option<String>,
         existing_password_data: &mut Option<PasswordDataVec>,
     ) {
         // Name field
@@ -73,15 +71,22 @@ impl AddPasswordForm {
                 name: self.name.clone(),
                 password: encrypted_password.clone(),
             };
-            self.write_password(password_data, mc, check_magic_crypt, existing_password_data)
+            self.write_password(
+                ctx,
+                password_data,
+                mc,
+                check_magic_crypt,
+                existing_password_data,
+            )
         }
     }
 
     pub fn write_password(
         &mut self,
+        ctx: &egui::Context,
         password_data: PasswordData,
         mc: &MagicCrypt256,
-        check_magic_crypt: Option<String>,
+        check_magic_crypt: &Option<String>,
         existing_password_data: &mut Option<PasswordDataVec>,
     ) {
         if let Some(check_magic_crypt) = check_magic_crypt {
@@ -95,6 +100,7 @@ impl AddPasswordForm {
                 };
 
                 password_data_vec.passwords.push(password_data);
+                *existing_password_data = Some(password_data_vec);
             }
         } else {
             let mut password_data_vec = crate::PasswordDataVec {
@@ -127,6 +133,11 @@ impl AddPasswordForm {
 
         // Write JSON data to the file
         save_password.write_all(json_data.as_bytes()).unwrap();
+
+        // if let Some(existing_password_data) = existing_password_data {
+        //     self.password_view
+        //         .show(ctx, mc, &mut existing_password_data.passwords);
+        // }
 
         self.name.clear();
         self.password.clear();

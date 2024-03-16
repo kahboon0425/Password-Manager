@@ -68,7 +68,7 @@ impl LoginPage {
         logged_in_key
     }
 
-    pub fn check_magic_crypt(magic_crypt: &MagicCrypt256) -> Option<String> {
+    pub fn check_magic_crypt(&mut self, magic_crypt: &MagicCrypt256) -> Option<String> {
         let mut file_found = None;
 
         let password_dir_path = "./password-folder";
@@ -85,12 +85,8 @@ impl LoginPage {
                     println!("{}", file_name.to_str().unwrap());
                     println!("---------------");
 
-                    // println!("Get password file name{:?}: ", file_name);
                     if let Some(password_file) = file_name.to_str() {
-                        // println!("Get password string file name{:?}: ", password_file);
                         if target_file_name.as_str() == password_file {
-                            // println!("MMMMMMMMMagic Crypt: {:?}", password_file);
-                            // println!("FFFFFFFFFile Name: {:?}", target_file_name);
                             file_found = Some(password_file.to_string());
                         }
                     }
@@ -101,7 +97,7 @@ impl LoginPage {
         file_found
     }
 
-    pub fn read_password(file_found: &Option<String>) -> Option<crate::PasswordDataVec> {
+    pub fn read_password(&mut self, file_found: &Option<String>) -> Option<crate::PasswordDataVec> {
         println!("{:?}", file_found);
 
         let password_dir_path = "./password-folder";
@@ -135,24 +131,9 @@ impl LoginPage {
                 }
             }
         } else {
-            // Handle error while reading directory
-            eprintln!("Error reading directory: {}", password_dir_path);
+            println!("Error reading directory: {}", password_dir_path);
         }
 
         None
     }
-
-    //     let content = match fs::read_to_string(file_found) {
-    //         Ok(content) => content,
-    //         Err(_) => return false,
-    //     };
-    //     println!("{}", content);
-
-    //     let password_data_vec: PasswordDataVec =
-    //         match serde_json::from_str::<PasswordDataVec>(&content) {
-    //             Ok(password_data_vec) => password_data_vec,
-    //             Err(_) => return false,
-    //         };
-
-    // }
 }
