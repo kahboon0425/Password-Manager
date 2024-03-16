@@ -16,8 +16,8 @@ impl TopPanel {
         &mut self,
         ctx: &egui::Context,
         mc: &MagicCrypt256,
-        check_mc: Option<String>,
-        existing_password_data: &mut Option<PasswordDataVec>,
+        filename: &String,
+        password_data_vec: &mut PasswordDataVec,
     ) -> bool {
         let mut logout = false;
 
@@ -31,23 +31,29 @@ impl TopPanel {
 
                 // Logout button
                 if ui.button("Logout").clicked() {
+                    self.password_view.hide_password();
                     logout = true;
                 };
             });
         });
 
-        self.add_password_form.show_window(
-            ctx,
-            &mut self.add_password_form_open,
-            mc,
-            &check_mc,
-            existing_password_data,
-        );
+        let password_data =
+            self.add_password_form
+                .show_window(ctx, &mut self.add_password_form_open, mc);
 
-        if let Some(existing_password_data) = existing_password_data {
+        // Add password data if user add a new one from the form above.
+        if let Some(password_data) = password_data {
+            // Update password on memory
+            password_data_vec.passwords.push(password_data);
             self.password_view
-                .show(ctx, mc, &mut existing_password_data.passwords, &check_mc);
+                .refresh_raw_password(&mc, &password_data_vec.passwords);
+
+            // Update file on disk
+            crate::write_to_file(filename, &password_data_vec);
         }
+
+        self.password_view
+            .show(ctx, mc, password_data_vec, &filename);
 
         logout
     }

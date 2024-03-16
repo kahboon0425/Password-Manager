@@ -1,7 +1,3 @@
-use std::fs;
-
-use magic_crypt::{MagicCrypt256, MagicCryptTrait};
-
 pub struct LoginPage {
     secret_key: String,
     show_secret: bool,
@@ -66,74 +62,5 @@ impl LoginPage {
 
         // Return the logged in key (move semantics)
         logged_in_key
-    }
-
-    pub fn check_magic_crypt(&mut self, magic_crypt: &MagicCrypt256) -> Option<String> {
-        let mut file_found = None;
-
-        let password_dir_path = "./password-folder";
-
-        let target_file_name: String = magic_crypt.encrypt_str_to_base64(crate::FILENAME_ENCRYPT);
-
-        if let Ok(files) = fs::read_dir(password_dir_path) {
-            for file in files {
-                if let Ok(file) = file {
-                    let file_name = file.file_name();
-
-                    println!("---------------");
-                    println!("{}", target_file_name);
-                    println!("{}", file_name.to_str().unwrap());
-                    println!("---------------");
-
-                    if let Some(password_file) = file_name.to_str() {
-                        if target_file_name.as_str() == password_file {
-                            file_found = Some(password_file.to_string());
-                        }
-                    }
-                }
-            }
-        }
-
-        file_found
-    }
-
-    pub fn read_password(&mut self, file_found: &Option<String>) -> Option<crate::PasswordDataVec> {
-        println!("{:?}", file_found);
-
-        let password_dir_path = "./password-folder";
-
-        if let Ok(files) = fs::read_dir(password_dir_path) {
-            for file in files {
-                if let Ok(file_entry) = file {
-                    let file_path = file_entry.path();
-
-                    if let Some(file_name) = file_found {
-                        if file_path.file_name() == Some(file_name.as_ref()) {
-                            println!(">>>>>>>>>>{}", file_name);
-                            if let Ok(content) = fs::read_to_string(&file_path) {
-                                println!("...............{}", content);
-                                if let Ok(password_data_vec) = serde_json::from_str(&content) {
-                                    println!("{:?}********************", password_data_vec);
-
-                                    // for password_data in password_data_vec.passwords {
-                                    //     println!(
-                                    //         "Name: {}, Password: {}",
-                                    //         password_data.name, password_data.password
-                                    //     );
-                                    // }
-                                    return Some(password_data_vec);
-                                }
-                            } else {
-                                eprintln!("Error reading file content for {}", file_name);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            println!("Error reading directory: {}", password_dir_path);
-        }
-
-        None
     }
 }
